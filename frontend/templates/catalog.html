@@ -1,0 +1,43 @@
+<html>
+<head>
+	<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+	<select id=catagory onChange='categoryOnChange()'>
+	{% for each in category %}
+	<option value={{each.id}}>{{each.description}}</option>
+	{% endfor %}
+	</select>
+
+	<select>
+	{% for each in group %}
+	<option class="group catagory_{{each.id}}" value={{each.description}}>
+	{{each.description}}
+	</option>
+	{% endfor %}
+	</select>
+
+	<select>
+	{% for each in item_type %}
+	<option class="item_type item_type_{{each.id}}" value={{each.name}}>{{each.name}}</option>
+	{% endfor %}
+	</select>
+
+</body>
+<script>
+	$(function() {
+		$('.group').hide()
+		$('.item_type').hide()
+		// debugger
+	})
+
+	function categoryOnChange(){
+
+		var selected = $('#catagory').val()
+		$('.catagory_' + selected).show()
+	}
+</script>
+</html>
