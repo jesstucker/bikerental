@@ -13,6 +13,7 @@ class Category(models.Model):
 	class Meta:
 		verbose_name_plural = "Categories"
 	description = models.CharField(max_length=100)
+	
 
 class Group(models.Model):
 	def __str__(self):

@@ -38,19 +38,11 @@ class CustomerViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
 
 
-class CustomerSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Customer
-        fields = ('id', 'name', 'notes')
-class CustomerViewSet(viewsets.ModelViewSet):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
-
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Category
-        fields = ('id','description','catg')
+        fields = ('id','description')
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -68,7 +60,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
-#Customer,Category,Group,ItemType,IndividualItem
+
 class ItemTypeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ItemType
@@ -83,8 +75,10 @@ class ItemTypeViewSet(viewsets.ModelViewSet):
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'customer', CustomerViewSet)
+router.register(r'category', CategoryViewSet)
 router.register(r'group', GroupViewSet)
 router.register(r'item-type', ItemTypeViewSet)
+
 
 
 
