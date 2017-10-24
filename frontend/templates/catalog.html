@@ -1,11 +1,82 @@
 <html>
 <head>
-	<script
-  src="https://code.jquery.com/jquery-3.2.1.min.js"
-  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-  crossorigin="anonymous"></script>
+		<script
+	  src="https://code.jquery.com/jquery-3.2.1.min.js"
+	  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	  crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.js"></script>
 </head>
 <body>
+	<div id="root"></div>
+
+	<script type="text/babel">
+// class Greeting extends React.Component {
+//     render() {
+//         return (<p>Hello world</p>);
+//     }
+// }
+// ReactDOM.render(
+//     <Greeting />,
+//     document.getElementById('root')
+// );
+
+var App = React.createClass({
+
+  getInitialState: function() {
+    return {
+      group: [],
+      SelectedGroup: null
+    }
+  },
+
+  componentDidMount: function() {
+    var _this = this;
+    this.serverRequest = 
+      axios
+        .get("http://127.0.0.1:8000/api/group/?format=json")
+        .then(function(result) {    
+          _this.setState({
+            group: result.data
+          });
+        })
+  },
+
+  onChangeGroup: function(e) {
+  	this.setState({selectGroup:e.target.value});
+  },
+
+  componentWillUnmount: function() {
+    this.serverRequest.abort();
+  },
+
+  render: function() {
+  	var message='You selected '+this.state.selectGroup;
+  	var options = []
+       for (var i = 0; i < this.state.group.length; i++) {
+    	var Group = this.state.group[i]
+    	options.push(
+    		<option value={Group.id}>{Group.description}</option>
+    	)
+    }
+    return (
+      <div>
+        <select onChange={this.onChangeGroup}>
+			{options}
+		</select>
+		<p>{message}</p>
+      </div>
+    )
+  }
+});
+ReactDOM.render(<App />, document.querySelector("#root"));
+
+</script>
+
+
 	<select id=catagory onChange='categoryOnChange()'>
 	{% for each in category %}
 	<option value={{each.id}}>{{each.description}}</option>
