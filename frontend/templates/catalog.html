@@ -26,7 +26,8 @@ var App = React.createClass({
       category: [],
       group: [],
       itemType: [],
-      SelectedCategory: null
+      SelectedCategory: null,
+      SelectedGroup: null
     });
   },
 
@@ -46,38 +47,64 @@ var App = React.createClass({
   },
 
   onChangeCategory: function(e) {
-  	this.setState({selectCategory:e.target.value});
+  	this.setState({SelectedCategory:e.target.value});
   },  
+
+  onChangeGroup: function(e) {
+    this.setState({SelectedGroup:e.target.value})
+  },
+
 
   componentWillUnmount: function() {
     this.serverRequest.abort();
   },
 
   render: function() {
-  	var message='You selected '+this.state.selectCategory;
+
+    var FilteredGroups = []
+    for (var i = 0; i < this.state.group.length; i++) {
+      var CurrentGroup = this.state.group[i];    
+      if(CurrentGroup.catg_id == this.state.SelectedCategory) {
+        FilteredGroups.push(CurrentGroup)
+      }
+    }
+
+    var FilteredItems = []
+    for (var i = 0; i < this.state.itemType.length; i++) {
+      var CurrentItem = this.state.itemType[i];    
+      if(CurrentItem.group_id == this.state.SelectedGroup) {
+        FilteredItems.push(CurrentItem)
+      }
+    }
 
     return (
       <div>
       
         <select onChange={this.onChangeCategory}>
           {this.state.category.map((catg,i) => 
-            <option key={i}>{catg.description}</option>
+            <option value={catg.id} key={i}>{catg.description}</option>
           )}
         </select>
 
-        <select onChange={this.onChangeCategory}>
-          {this.state.group.map((group, i) =>
-            <option key={i}>{group.description}</option>
+        <select onChange={this.onChangeGroup}>
+          {FilteredGroups.map((group, i) =>
+            <option value={group.id} key={i}>{group.description}</option>
           )}
         </select>
 
-        <select onChange={this.onChangeCategory}>
-          {this.state.itemType.map((item, i) =>
-            <option key={i}>{item.name}</option>
+        <select>
+          {FilteredItems.map((item, i) =>
+            <option value={item.id} key={i}>{item.name}</option>
           )}
         </select>
 
-    		<p>{message}</p>
+        <p>
+          {0 > 0 &&
+            <b>
+              You have {} unread messages.
+            </b>
+          }
+        </p>
 
       </div>
     )
@@ -88,38 +115,7 @@ ReactDOM.render(<App />, document.querySelector("#root"));
 </script>
 
 
-	<select id=catagory onChange='categoryOnChange()'>
-	{% for each in category %}
-	<option value={{each.id}}>{{each.description}}</option>
-	{% endfor %}
-	</select>
 
-	<select>
-	{% for each in group %}
-	<option class="group catagory_{{each.id}}" value={{each.description}}>
-	{{each.description}}
-	</option>
-	{% endfor %}
-	</select>
-
-	<select>
-	{% for each in item_type %}
-	<option class="item_type item_type_{{each.id}}" value={{each.name}}>{{each.name}}</option>
-	{% endfor %}
-	</select>
 
 </body>
-<script>
-	$(function() {
-		$('.group').hide()
-		$('.item_type').hide()
-		// debugger
-	})
-
-	function categoryOnChange(){
-
-		var selected = $('#catagory').val()
-		$('.catagory_' + selected).show()
-	}
-</script>
 </html>

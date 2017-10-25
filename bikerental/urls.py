@@ -51,9 +51,13 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     category = serializers.CharField(source='catg', read_only=True)
     # category = serializers.RelatedField(source='catg')
+    catg_id = serializers.SerializerMethodField('id_me')
+
+    def id_me(self, Group):
+        return Group.catg.id 
     class Meta:
         model = Group        
-        fields = ('id', 'description', 'category',
+        fields = ('id', 'description', 'category', 'catg_id',
             )
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
@@ -62,9 +66,14 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 class ItemTypeSerializer(serializers.HyperlinkedModelSerializer):
+    group_id = serializers.SerializerMethodField('id_me')
+    def id_me(self, ItemType):
+        return ItemType.group.id 
+
     class Meta:
         model = ItemType
-        fields = ('id', 'name', 'group', 'cost_per_hour', 'cost_per_day', 'image')
+        fields = ('id', 'name', 'group', 'cost_per_hour', 
+            'cost_per_day', 'image', 'group_id')
 class ItemTypeViewSet(viewsets.ModelViewSet):
     queryset = ItemType.objects.all()
     serializer_class = ItemTypeSerializer
