@@ -27,7 +27,8 @@ var App = React.createClass({
       group: [],
       itemType: [],
       SelectedCategory: null,
-      SelectedGroup: null
+      SelectedGroup: null,
+      SelectedItem: null
     });
   },
 
@@ -54,6 +55,9 @@ var App = React.createClass({
     this.setState({SelectedGroup:e.target.value})
   },
 
+  onChangeItem: function(e) {
+    this.setState({SelectedItem:e.target.value})
+  },
 
   componentWillUnmount: function() {
     this.serverRequest.abort();
@@ -77,6 +81,10 @@ var App = React.createClass({
       }
     }
 
+    //let longWords = itemType.filter(itemType   => word.length > 6);
+    let ActuallySelectedItem = this.state.itemType.find(x => x.id == this.state.SelectedItem)
+    console.log(ActuallySelectedItem);
+    console.log(this.state.SelectedItem);
     return (
       <div>
       
@@ -92,19 +100,20 @@ var App = React.createClass({
           )}
         </select>
 
-        <select>
+        <select onChange={this.onChangeItem}>
           {FilteredItems.map((item, i) =>
             <option value={item.id} key={i}>{item.name}</option>
           )}
         </select>
 
-        <p>
-          {0 > 0 &&
-            <b>
-              You have {} unread messages.
-            </b>
+
+          {ActuallySelectedItem !== undefined &&
+            <div style={ {border: '1px solid black'} }>
+              You have chosen {ActuallySelectedItem.name}.
+
+            </div>
           }
-        </p>
+
 
       </div>
     )
