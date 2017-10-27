@@ -87,30 +87,39 @@ var App = React.createClass({
     console.log(this.state.SelectedItem);
     return (
       <div>
-      
-        <select onChange={this.onChangeCategory}>
-          {this.state.category.map((catg,i) => 
-            <option value={catg.id} key={i}>{catg.description}</option>
-          )}
-        </select>
+          <select onChange={this.onChangeCategory}>
+            {this.state.category.map((catg,i) => 
+              <option value={catg.id} key={i}>{catg.description}</option>
+            )}
+          </select>
 
-        <select onChange={this.onChangeGroup}>
-          {FilteredGroups.map((group, i) =>
-            <option value={group.id} key={i}>{group.description}</option>
-          )}
-        </select>
+          <select onChange={this.onChangeGroup}>
+            {FilteredGroups.map((group, i) =>
+              <option value={group.id} key={i}>{group.description}</option>
+            )}
+          </select>
 
-        <select onChange={this.onChangeItem}>
-          {FilteredItems.map((item, i) =>
-            <option value={item.id} key={i}>{item.name}</option>
-          )}
-        </select>
+          <select onChange={this.onChangeItem}>
+            {FilteredItems.map((item, i) =>
+              <option value={item.id} key={i}>{item.name}</option>
+            )}
+          </select>
+
 
 
           {ActuallySelectedItem !== undefined &&
-            <div style={ {border: '1px solid black'} }>
+            <div style={ {border: '1px solid black', width: 'auto'} }>
               You have chosen {ActuallySelectedItem.name}.
+              <h1>{ActuallySelectedItem.name}</h1>
+              <p>{ActuallySelectedItem.description}</p>
+              <p>{ActuallySelectedItem.cost_per_hour}</p>
+              <p>{ActuallySelectedItem.cost_per_day}</p>
+              <img src={ActuallySelectedItem.image} />
 
+              <form >
+                <input  type={'hidden'} value = {this.state.SelectedItem} name='id' />
+                <input type='submit' value = 'Reserve' />
+              </form>
             </div>
           }
 

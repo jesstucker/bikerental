@@ -19,7 +19,7 @@ class Group(models.Model):
 	def __str__(self):
 		return '%s' % (self.description)
 	description = models.CharField(max_length=100)
-	catg = models.ForeignKey(Category)
+	catg = models.ForeignKey(Category, null=True)
 
 class ItemType(models.Model):
 	def __str__(self):

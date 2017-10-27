@@ -17,10 +17,19 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from frontend import views as frontend_views
 from django.contrib.auth.models import User
+
 from rest_framework import routers, serializers, viewsets
 from inventory.models import Customer, Category, Group, ItemType, IndividualItem
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+#Getting a dern token
+from django.db.models.signals import post_save
+from rest_framework.authtoken.models import Token
+from django.dispatch import receiver
+from django.conf import settings
+
+# from rest_framework.authtoken.views import obtain_auth_token
+
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('url', 'username', 'email', 'is_staff')
@@ -28,8 +37,14 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+#token
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 
-class CustomerSerializer(serializers.HyperlinkedModelSerializer):
+
+class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ('id', 'name', 'notes')
@@ -39,7 +54,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('id','description')
@@ -48,7 +63,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='catg', read_only=True)
     # category = serializers.RelatedField(source='catg')
     catg_id = serializers.SerializerMethodField('id_me')
@@ -57,7 +72,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         return Group.catg.id 
     class Meta:
         model = Group        
-        fields = ('id', 'description', 'category', 'catg_id',
+        fields = ('id', 'description', 'category', 'catg', 'catg_id',
             )
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
@@ -65,7 +80,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 
-class ItemTypeSerializer(serializers.HyperlinkedModelSerializer):
+class ItemTypeSerializer(serializers.ModelSerializer):
     group_id = serializers.SerializerMethodField('id_me')
     def id_me(self, ItemType):
         return ItemType.group.id 
@@ -99,5 +114,6 @@ urlpatterns = [
     url(r'^catalog', frontend_views.catalog),
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # url(r'^get-token/', obtain_auth_token),
 
 ]
