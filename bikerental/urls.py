@@ -1,119 +1,13 @@
-"""bikerental URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/1.11/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.conf.urls import url, include
-    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
-"""
 from django.conf.urls import url, include
 from django.contrib import admin
 from frontend import views as frontend_views
-from django.contrib.auth.models import User
 
-from rest_framework import routers, serializers, viewsets
-from inventory.models import Customer, Category, Group, ItemType, IndividualItem
-
-#Getting a dern token
-from django.db.models.signals import post_save
-from rest_framework.authtoken.models import Token
-from django.dispatch import receiver
-from django.conf import settings
-
-# from rest_framework.authtoken.views import obtain_auth_token
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'is_staff')
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-#token
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
-
-
-class CustomerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = ('id', 'name', 'notes')
-class CustomerViewSet(viewsets.ModelViewSet):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
-
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ('id','description')
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
-
-class GroupSerializer(serializers.ModelSerializer):
-    category = serializers.CharField(source='catg', read_only=True)
-    # category = serializers.RelatedField(source='catg')
-    catg_id = serializers.SerializerMethodField('id_me')
-
-    def id_me(self, Group):
-        return Group.catg.id 
-    class Meta:
-        model = Group        
-        fields = ('id', 'description', 'category', 'catg', 'catg_id',
-            )
-class GroupViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
-
-
-class ItemTypeSerializer(serializers.ModelSerializer):
-    group_id = serializers.SerializerMethodField('id_me')
-    def id_me(self, ItemType):
-        return ItemType.group.id 
-
-    class Meta:
-        model = ItemType
-        fields = ('id', 'name', 'group', 'cost_per_hour', 
-            'cost_per_day', 'image', 'group_id')
-class ItemTypeViewSet(viewsets.ModelViewSet):
-    queryset = ItemType.objects.all()
-    serializer_class = ItemTypeSerializer
-
-
-
-
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'customer', CustomerViewSet)
-router.register(r'category', CategoryViewSet)
-router.register(r'group', GroupViewSet)
-router.register(r'item-type', ItemTypeViewSet)
-
-
-
-
-
+# from api import urls as api_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', frontend_views.index),
     url(r'^catalog', frontend_views.catalog),
-    url(r'^api/', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    # url(r'^get-token/', obtain_auth_token),
+    url(r'^api/', include('api.urls')),
 
 ]

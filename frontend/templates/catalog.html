@@ -32,9 +32,7 @@ var App = React.createClass({
     });
   },
 
-  fetchApiCallData: function(api) {
-        return axios.get(api);
-    },
+
 
   componentDidMount: function() {
     axios.all(this.props.ajaxApi.map(api => axios.get(api)))
