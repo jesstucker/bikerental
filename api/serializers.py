@@ -69,13 +69,11 @@ class ItemTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ItemType
-        fields = ('id', 'name', 'group', 'cost_per_hour', 
+        fields = ('id', 'name', 'group', 'cost_per_hour',
             'cost_per_day', 'image', 'group_id')
 class ItemTypeViewSet(viewsets.ModelViewSet):
     queryset = ItemType.objects.all()
     serializer_class = ItemTypeSerializer
-
-
 
 
 router = routers.DefaultRouter()
@@ -85,3 +83,30 @@ router.register(r'category', CategoryViewSet)
 router.register(r'group', GroupViewSet)
 router.register(r'item-type', ItemTypeViewSet)
 
+from reservations.models import Reservation
+from rest_framework import generics
+
+class ReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
+        fields = '__all__'
+
+class ReservationList(viewsets.ModelViewSet):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+
+    def get_queryset(self):
+        queryset = Reservation.objects.all()
+        item = self.request.query_params.get('item', None)
+        begin = self.request.query_params.get('begin', None)
+        end = self.request.query_params.get('end', None)
+
+        if item is not None:
+            queryset = queryset.filter(item=item)
+        if end is not None:
+            queryset = queryset.filter(ends__lte=end)
+        return queryset
+
+
+
+router.register(r'reservations', ReservationList)

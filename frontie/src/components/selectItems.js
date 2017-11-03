@@ -10,14 +10,14 @@ export default class SelectItem extends Component{
                 "/api/group/?format=json",
                 "/api/item-type/?format=json",
                 ].map(api => axios.get(api)))
-    .then(axios.spread((req1, req2, req3) => {
-      this.setState({
-        category: req1.data,
-        group: req2.data,
-        itemType: req3.data
-      })
-    }))
-  }
+			    .then(axios.spread((req1, req2, req3) => {
+			      this.setState({
+			        category: req1.data,
+			        group: req2.data,
+			        itemType: req3.data
+			      })
+    			}))
+  	}
 
 	state = {
       category: [],
