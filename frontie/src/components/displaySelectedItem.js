@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
 export default class DisplaySelectedItem extends Component{
-
-
- 
-
   render(){
   var Thing = this.props.ActuallySelectedItem;
   return (

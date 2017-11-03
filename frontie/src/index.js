@@ -3,14 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import SelectItem from './components/selectItems';
+import Calendar from './components/calendar/Calendar'
 import registerServiceWorker from './registerServiceWorker';
 import axios from 'axios';
+import moment from 'moment';
 
 
 
 
 
 
-
-ReactDOM.render(<SelectItem />, document.getElementById('root'));
+ReactDOM.render(<div>
+                    <SelectItem />
+                    <Calendar selected={moment().startOf("day")}/>
+                </div>, document.getElementById('root'));
 registerServiceWorker();
