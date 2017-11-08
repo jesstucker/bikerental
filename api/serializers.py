@@ -76,7 +76,18 @@ class ItemTypeViewSet(viewsets.ModelViewSet):
     serializer_class = ItemTypeSerializer
 
 
+from reservations.models import BikeReservationDatesReport
+from rest_framework.views import APIView
+from rest_framework.response import Response
+class BikeDatesReportView(APIView):
+    def get(self, request):
+        response = Response(BikeReservationDatesReport.get_all_dates())
+        return response
+
+
+
 router = routers.DefaultRouter()
+
 router.register(r'users', UserViewSet)
 router.register(r'customer', CustomerViewSet)
 router.register(r'category', CategoryViewSet)
@@ -87,6 +98,7 @@ from reservations.models import Reservation
 from rest_framework import generics
 
 class ReservationSerializer(serializers.ModelSerializer):
+    daterange = serializers.ReadOnlyField(source='reservation_daterange')
     class Meta:
         model = Reservation
         fields = '__all__'
@@ -100,13 +112,17 @@ class ReservationList(viewsets.ModelViewSet):
         item = self.request.query_params.get('item', None)
         begin = self.request.query_params.get('begin', None)
         end = self.request.query_params.get('end', None)
+        daterange = self.request.query_params.get('daterange', None)
+
 
         if item is not None:
             queryset = queryset.filter(item=item)
         if end is not None:
             queryset = queryset.filter(ends__lte=end)
+        if begin is not None:
+            queryset = queryset.filter(begins__gte=begin)
+        if daterange is not None:
+            queryset = queryset.filter(reservation_daterange=daterange)
         return queryset
-
-
 
 router.register(r'reservations', ReservationList)

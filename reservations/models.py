@@ -22,9 +22,19 @@ class Reservation(models.Model):
 	customer = models.ForeignKey(inventory_models.Customer)
 	begins = models.DateTimeField()
 	ends = models.DateTimeField()
+	
+
+	@property
+	def reservation_daterange(self):
+		day_delta = abs((self.begins - self.ends).days)
+		daterange = [(self.begins + timedelta(days=day)).strftime('%m-%d-%y') for day in range(day_delta + 1)]
+		if len(daterange) == 2:
+			return [daterange[0]]
+		else:
+			return daterange[:-1]
+
 
 	def clean(self):
-
 		Range = namedtuple('Range', ['start', 'end'])
 		r2 = Range(start=self.begins, end=self.ends)
 		res_this_item = Reservation.objects.filter(item__id=self.item.id)
@@ -44,6 +54,29 @@ class Reservation(models.Model):
 
 
 	def save(self, *args, **kwargs):
-		self.ends += HOUR
+		# self.ends += HOUR
 		self.full_clean()
 		return super(Reservation, self).save(*args, **kwargs)
+
+
+class BikeReservationDatesReport(object):
+
+	@classmethod
+	def get_all_dates(cls):
+		all_dates = []
+		for dates in Reservation.objects.all():
+			for date in dates.reservation_daterange:
+				all_dates.append(date)
+		all_res_dates = list(set(all_dates))
+		
+		return all_res_dates
+		
+	@classmethod
+	def get_unique_dates(cls, bike_id):
+		res_dates = []
+		for dates in Reservation.objects.filter(id=bike_id):
+			for date in dates.reservation_daterange:
+				res_dates.append(date)
+		unique_res_dates = list(set(res_dates))
+		
+		return unique_res_dates

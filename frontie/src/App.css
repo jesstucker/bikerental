@@ -65,7 +65,6 @@
   border-top: none;
 }
 #calendar > div.week > span.day {
-  float: left;
   width: 14.28571429%;
   box-sizing: border-box;
   -moz-box-sizing: border-box;

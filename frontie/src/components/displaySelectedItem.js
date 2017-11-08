@@ -10,7 +10,7 @@ export default class DisplaySelectedItem extends Component{
       <p>{Thing.description}</p>
       <p>{Thing.cost_per_hour}</p>
       <p>{Thing.cost_per_day}</p>
-      <img src={Thing.image} />
+      <img alt="" src={Thing.image} />
 
       <form >
         <input  type={'hidden'} value = {Thing.id} name='id' />
