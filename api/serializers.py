@@ -70,20 +70,10 @@ class ItemTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemType
         fields = ('id', 'name', 'group', 'cost_per_hour',
-            'cost_per_day', 'image', 'group_id')
+            'cost_per_day', 'image', 'group_id', 'reservation_dates')
 class ItemTypeViewSet(viewsets.ModelViewSet):
     queryset = ItemType.objects.all()
     serializer_class = ItemTypeSerializer
-
-
-from reservations.models import BikeReservationDatesReport
-from rest_framework.views import APIView
-from rest_framework.response import Response
-class BikeDatesReportView(APIView):
-    def get(self, request):
-        response = Response(BikeReservationDatesReport.get_all_dates())
-        return response
-
 
 
 router = routers.DefaultRouter()

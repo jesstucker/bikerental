@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Week from './Week';
 import DayNames from './DayNames';
 
+
 export default class Calendar extends Component {
 
     constructor(props) {
@@ -40,7 +41,8 @@ export default class Calendar extends Component {
         while (!done) {
             weeks.push(<Week key={date.toString()} date={date.clone()}
                 month={this.state.month} select={this.select}
-                selected={this.state.selected} />);
+                selected={this.state.selected}
+                reservations={this.props.reservations} multiple/>);
             date.add(1, "w");
             done = count++ > 2 && monthIndex !== date.month();
             monthIndex = date.month();

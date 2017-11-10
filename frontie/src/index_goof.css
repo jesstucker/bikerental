@@ -1,38 +1,31 @@
-.reserved {
-  background-color: red !important;
-  pointer-events: none;
-}
-.selected-bike {
-  width: 100px;
-}
 .border-box {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
-#calendar {
+calendar {
   float: left;
   display: block;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   background: white;
-  width: 250px;
+  width: 300px;
   border: solid 1px #CCC;
   margin-bottom: 10px;
 }
-#calendar > div.header {
+calendar > div.header {
   float: left;
   width: 100%;
   background: #2875C7;
-  height: 20px;
+  height: 40px;
   color: white;
 }
-#calendar > div.header > * {
-  height: 20px;
-  line-height: 20px !important;
+calendar > div.header > * {
+  height: 40px;
+  line-height: 40px !important;
   display: inline-block;
   vertical-align: middle;
 }
-#calendar > div.header > i {
+calendar > div.header > i {
   float: left;
   width: 40px;
   font-size: 1.125em;
@@ -43,14 +36,14 @@
   padding: 0 10px;
   cursor: pointer;
 }
-#calendar > div.header > i.fa-angle-left {
+calendar > div.header > i.fa-angle-left {
   text-align: left;
 }
-#calendar > div.header > i.fa-angle-right {
+calendar > div.header > i.fa-angle-right {
   text-align: right;
   margin-left: -40px;
 }
-#calendar > div.header > span {
+calendar > div.header > span {
   float: left;
   width: 100%;
   font-weight: bold;
@@ -63,43 +56,44 @@
   padding-right: 40px;
   color: inherit;
 }
-#calendar > div.week {
+calendar > div.week {
   float: left;
   width: 100%;
   border-top: solid 1px #CCC;
 }
-#calendar > div.week:first-child {
+calendar > div.week:first-child {
   border-top: none;
 }
-#calendar > div.week > span.day {
+calendar > div.week > span.day {
+  float: left;
   width: 14.28571429%;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   border-left: solid 1px #CCC;
   font-size: 0.75em;
   text-align: center;
-  height: 40px;
-  line-height: 40px !important;
+  height: 30px;
+  line-height: 30px !important;
   display: inline-block;
   vertical-align: middle;
   background: white;
   cursor: pointer;
   color: black;
 }
-#calendar > div.week > span.day:first-child {
+calendar > div.week > span.day:first-child {
   border-left: none;
 }
-#calendar > div.week > span.day.today {
+calendar > div.week > span.day.today {
   background: #E3F2FF;
 }
-#calendar > div.week > span.day.different-month {
+calendar > div.week > span.day.different-month {
   color: #C0C0C0;
 }
-#calendar > div.week > span.day.selected {
+calendar > div.week > span.day.selected {
   background: #2875C7;
   color: white;
 }
-#calendar > div.week.names > span {
+calendar > div.week.names > span {
   color: #2875C7;
   font-weight: bold;
 }

@@ -4,9 +4,6 @@ from django.core.validators import URLValidator, RegexValidator
 
 
 class Customer(models.Model):
-    """
-    Test :D
-    """
     def __str__(self):
         return '%s' % (self.name)
     name = models.CharField(max_length=100)
@@ -29,7 +26,7 @@ class Group(models.Model):
     def __str__(self):
         return '%s' % (self.description)
     description = models.CharField(max_length=100)
-    catg = models.ForeignKey(Category, null=True)
+    catg = models.ForeignKey('Category', null=True)
 
 class ItemType(models.Model):
     def __str__(self):
@@ -39,11 +36,22 @@ class ItemType(models.Model):
     cost_per_hour = models.DecimalField(max_digits=6, decimal_places=2)
     cost_per_day = models.DecimalField(max_digits=6, decimal_places=2)
     image = models.TextField(validators=[URLValidator()])
+
+    @property
+    def reservation_dates(self):
+        from reservations.models import Reservation
+        res_dates = []
+        for dates in Reservation.objects.filter(item_id=self.id):
+            for date in dates.reservation_daterange:
+                res_dates.append(date)
+        unique_res_dates = list(set(res_dates))
+        return unique_res_dates
     
 class IndividualItem(models.Model):
     def __str__(self):
         return '%s' % (self.item_type)
     barcode = models.IntegerField()
-    item_type = models.ForeignKey(ItemType)
-    customer = models.ForeignKey(Customer, blank=True, null=True)
+    item_type = models.ForeignKey('ItemType')
+    customer = models.ForeignKey('Customer', blank=True, null=True)
+
 

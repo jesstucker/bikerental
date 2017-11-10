@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ValidationError
-from inventory import models as inventory_models
+from inventory.models import IndividualItem, Customer
 from django.contrib.auth.models import User
 from time import strftime
 from datetime import timedelta, datetime
@@ -14,15 +14,22 @@ HOUR = timedelta(hours=1)
 
 class Reservation(models.Model):
 	def __str__(self):
-		return f'{self.customer}, {self.item}. \
-		{timezone.localtime(self.begins).strftime("%m/%d %H:%M")}\
-		 –\
-		{timezone.localtime(self.ends).strftime("%m/%d %H:%M")}'
-	item = models.ForeignKey(inventory_models.IndividualItem)
-	customer = models.ForeignKey(inventory_models.Customer)
+		return f'{self.customer}, {self.item}. {timezone.localtime(self.begins).strftime("%m/%d %H:%M")}–{timezone.localtime(self.ends).strftime("%m/%d %H:%M")}'
+	item = models.ForeignKey(IndividualItem)
+	customer = models.ForeignKey(Customer)
 	begins = models.DateTimeField()
 	ends = models.DateTimeField()
-	
+
+
+	@property
+	def get_bike_dates(self):
+		res_dates = []
+		for dates in Reservation.objects.filter(item_id=self.item):
+			for date in dates.reservation_daterange:
+				res_dates.append(date)
+		unique_res_dates = list(set(res_dates))
+		return unique_res_dates
+
 
 	@property
 	def reservation_daterange(self):
@@ -57,26 +64,3 @@ class Reservation(models.Model):
 		# self.ends += HOUR
 		self.full_clean()
 		return super(Reservation, self).save(*args, **kwargs)
-
-
-class BikeReservationDatesReport(object):
-
-	@classmethod
-	def get_all_dates(cls):
-		all_dates = []
-		for dates in Reservation.objects.all():
-			for date in dates.reservation_daterange:
-				all_dates.append(date)
-		all_res_dates = list(set(all_dates))
-		
-		return all_res_dates
-		
-	@classmethod
-	def get_unique_dates(cls, bike_id):
-		res_dates = []
-		for dates in Reservation.objects.filter(id=bike_id):
-			for date in dates.reservation_daterange:
-				res_dates.append(date)
-		unique_res_dates = list(set(res_dates))
-		
-		return unique_res_dates

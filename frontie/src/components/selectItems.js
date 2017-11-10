@@ -36,8 +36,8 @@ export default class SelectItem extends Component {
 
   onChangeCategory = (e) => {
     this.setState({ SelectedCategory: e.target.value });
-    this.setState({ SelectedGroup: null});
-    this.setState({ SelectedItem: null});
+    this.setState({ SelectedGroup: null });
+    this.setState({ SelectedItem: null });
   }
 
   onChangeGroup = (e) => {
@@ -50,7 +50,6 @@ export default class SelectItem extends Component {
   }
 
   render() {
-    console.log(this.state.SelectedGroup)
     var FilteredGroups = [
       {
         "id": -1,
@@ -107,6 +106,13 @@ export default class SelectItem extends Component {
         </select>
 
         <DisplaySelectedItem ActuallySelectedItem={ActuallySelectedItem} />
+
+
+
+
+
+
+
 
 
       </div>
