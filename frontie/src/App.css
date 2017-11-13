@@ -1,3 +1,6 @@
+.pending-reserve {
+  background-color: yellow !important;
+}
 .reserved {
   background-color: red !important;
   pointer-events: none;

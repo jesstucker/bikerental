@@ -9,9 +9,24 @@ export default class Calendar extends Component {
         super(props);
         this.state = {
             month: this.props.selected.clone(),
-            selected: this.props.selected
+            selected: this.props.selected,
+            dates_selected: []
         }
     }
+
+    toggleReservationDate = (e) => {
+        var el = e.target;
+        if (el.classList.contains("not-reserved")) {
+            if (el.classList.contains('pending-reserve')) {
+                el.classList.remove("pending-reserve")
+                this.setState({ dates_selected: this.state.dates_selected.filter(date => date !== el.id) });
+            } else {
+                el.className += " pending-reserve";
+                this.setState({ dates_selected: this.state.dates_selected.concat(el.id) });
+            }
+        }
+    }
+
 
     previous = () => {
         var month = this.state.month;
@@ -30,6 +45,7 @@ export default class Calendar extends Component {
         this.forceUpdate();
     };
 
+
     renderWeeks = () => {
         var weeks = [],
             done = false,
@@ -40,9 +56,10 @@ export default class Calendar extends Component {
 
         while (!done) {
             weeks.push(<Week key={date.toString()} date={date.clone()}
-                month={this.state.month} select={this.select}
+                month={this.state.month}
+                select={this.select}
                 selected={this.state.selected}
-                reservations={this.props.reservations} multiple/>);
+                reservations={this.props.reservations} />);
             date.add(1, "w");
             done = count++ > 2 && monthIndex !== date.month();
             monthIndex = date.month();
@@ -55,7 +72,7 @@ export default class Calendar extends Component {
     };
 
     render() {
-        return <div id="calendar">
+        return <div style={{ position: 'absolute', right: '0', top: '0' }} id="calendar" onMouseDown={e => this.toggleReservationDate(e)}>
             <div className="header">
                 <i className="fa fa-angle-left" onClick={this.previous}>&lt;</i>
                 {this.renderMonthLabel()}
@@ -63,6 +80,13 @@ export default class Calendar extends Component {
             </div>
             <DayNames />
             {this.renderWeeks()}
+            <div>You have selected the following dates: <br />
+                <ul>
+                    {this.state.dates_selected.map(function (date, index) {
+                        return <li key={index}>{date}</li>
+                    })}
+                </ul>
+            </div>
         </div>
     }
 };

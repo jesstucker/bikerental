@@ -15,7 +15,7 @@ export default class DisplaySelectedItem extends Component {
         <p>{Thing.cost_per_hour}</p>
         <p>{Thing.cost_per_day}</p>
         <img className="selected-bike" alt="" src={Thing.image} />
-        <Calendar selected={moment().startOf("day")} reservations={Thing.reservation_dates} />
+        <Calendar selected={moment().startOf("day")} reservations={Thing.reservation_dates}/>
         <form >
           <input type={'hidden'} value={Thing.id} name='id' />
           <input type='submit' value='Reserve' />

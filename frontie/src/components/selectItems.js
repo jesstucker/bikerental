@@ -108,13 +108,6 @@ export default class SelectItem extends Component {
         <DisplaySelectedItem ActuallySelectedItem={ActuallySelectedItem} />
 
 
-
-
-
-
-
-
-
       </div>
     )
 
