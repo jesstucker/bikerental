@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Week from './Week';
 import DayNames from './DayNames';
+import moment from 'moment'
 
 
 export default class Calendar extends Component {
@@ -10,14 +11,17 @@ export default class Calendar extends Component {
         this.state = {
             month: this.props.selected.clone(),
             selected: this.props.selected,
-            dates_selected: []
+            dates_selected: [],
+            date_picker: [],
+            last_selected: null
+
         }
     }
 
-    toggleReservationDate = (e) => {
+    toggleReservationSelection = (e) => {
         var el = e.target;
         if (el.classList.contains("not-reserved")) {
-            if (el.classList.contains('pending-reserve')) {
+            if (el.classList.contains("pending-reserve")) {
                 el.classList.remove("pending-reserve")
                 this.setState({ dates_selected: this.state.dates_selected.filter(date => date !== el.id) });
             } else {
@@ -25,8 +29,66 @@ export default class Calendar extends Component {
                 this.setState({ dates_selected: this.state.dates_selected.concat(el.id) });
             }
         }
+    };
+
+
+
+    enumerateBetweenDates = (startDate, endDate) => {
+        let dates = [];
+        let currDate = moment(startDate).startOf('day');
+        let lastDate = moment(endDate).startOf('day');
+
+
+        while (currDate.add(1, 'days').diff(lastDate) < 0) {
+            console.log(currDate.toDate());
+            dates.push(currDate.clone().toDate());
+        }
+        return dates;
     }
 
+
+
+    selectReservationRange = (e) => {
+        var el = e.target;
+        if (el.classList.contains("not-reserved")) {
+            if (this.state.date_picker.length <= 1) {
+                el.className += " pending-reserve";
+                this.setState({
+                    date_picker: this.state.date_picker.concat(el.id),
+                    last_selected: el
+                })
+            }
+            if (this.state.date_picker.length >= 2) {
+                el.className += " pending-reserve";
+                this.state.last_selected.classList.remove("pending-reserve")
+                this.setState({
+                    date_picker: this.state.date_picker.filter(date => date != this.state.date_picker.slice(-1)).concat(el.id).sort(),
+                    last_selected: el
+                })
+
+            }
+        }
+        this.setState({
+            dates_selected: this.enumerateBetweenDates(this.state.date_picker[0], this.state.date_picker[1])
+        })
+
+
+
+        // this.state.dates_selected.forEach(date => {
+        //     var date = date.format("MM-DD-YY");
+        //     // var days = document.getElementsByClassName("day")
+        //     let days = this.state.
+        //     console.log('DAYZ: ' + days)
+
+        //     for (i = 0; i > days.length; i++) {
+        //         days[i].classList.remove("pending-reserve")
+        //         if (days[i].id == date) {
+        //             days[i].className += " pending-reserve"
+        //         }
+        //     }
+
+        // })
+    };
 
     previous = () => {
         var month = this.state.month;
@@ -72,7 +134,7 @@ export default class Calendar extends Component {
     };
 
     render() {
-        return <div style={{ position: 'absolute', right: '0', top: '0' }} id="calendar" onMouseDown={e => this.toggleReservationDate(e)}>
+        return <div style={{ position: 'absolute', right: '0', top: '0' }} id="calendar" onMouseDown={e => this.selectReservationRange(e)}>
             <div className="header">
                 <i className="fa fa-angle-left" onClick={this.previous}>&lt;</i>
                 {this.renderMonthLabel()}
@@ -81,11 +143,15 @@ export default class Calendar extends Component {
             <DayNames />
             {this.renderWeeks()}
             <div>You have selected the following dates: <br />
-                <ul>
-                    {this.state.dates_selected.map(function (date, index) {
+
+                {this.state.date_picker.sort()[0]} to {this.state.date_picker.sort()[1]}
+                {/* <ul>
+                    {this.state.date_picker.map(function (date, index) {
                         return <li key={index}>{date}</li>
                     })}
-                </ul>
+                </ul> */}
+                {console.log(this.state.date_picker)}
+                {console.log(this.state.dates_selected)}
             </div>
         </div>
     }

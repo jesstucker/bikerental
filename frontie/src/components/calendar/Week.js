@@ -30,7 +30,7 @@ export default class Week extends Component {
             days.push(
                 <span
                     key={day.date.toString()}
-                    id={day.date.format("MM-DD")}
+                    id={day.date.format("MM-DD-YY")}
                     className={"day" + (day.isToday ? " today" : "") +
                         (day.isCurrentMonth ? "" : " different-month") +
                         (day.date.isSame(this.props.selected) ? " selected" : "") + " " +

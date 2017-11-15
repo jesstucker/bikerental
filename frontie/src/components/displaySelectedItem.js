@@ -3,6 +3,7 @@ import Calendar from './calendar/Calendar';
 import moment from 'moment'
 
 
+
 export default class DisplaySelectedItem extends Component {
   render() {
     var Thing = this.props.ActuallySelectedItem;
@@ -15,8 +16,8 @@ export default class DisplaySelectedItem extends Component {
         <p>{Thing.cost_per_hour}</p>
         <p>{Thing.cost_per_day}</p>
         <img className="selected-bike" alt="" src={Thing.image} />
-        <Calendar selected={moment().startOf("day")} reservations={Thing.reservation_dates}/>
-        <form >
+        <Calendar selected={moment().startOf("day")} reservations={Thing.reservation_dates} />
+        <form action="#" method="post" name="myform">
           <input type={'hidden'} value={Thing.id} name='id' />
           <input type='submit' value='Reserve' />
         </form>
