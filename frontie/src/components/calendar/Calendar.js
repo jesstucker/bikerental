@@ -14,9 +14,8 @@ export default class Calendar extends Component {
             dates_selected: [],
             date_picker: [],
             last_selected: null
-
         }
-    }
+    };
 
     toggleReservationSelection = (e) => {
         var el = e.target;
@@ -24,10 +23,13 @@ export default class Calendar extends Component {
             if (el.classList.contains("pending-reserve")) {
                 el.classList.remove("pending-reserve")
                 this.setState({ dates_selected: this.state.dates_selected.filter(date => date !== el.id) });
+                this.props.dates_selected = this.sendDatesSelected();
             } else {
                 el.className += " pending-reserve";
                 this.setState({ dates_selected: this.state.dates_selected.concat(el.id) });
+                this.props.dates_selected = this.sendDatesSelected();
             }
+
         }
     };
 
@@ -40,7 +42,7 @@ export default class Calendar extends Component {
 
 
         while (currDate.add(1, 'days').diff(lastDate) < 0) {
-            console.log(currDate.toDate());
+            // console.log(currDate.toDate());
             dates.push(currDate.clone().toDate());
         }
         return dates;
@@ -72,22 +74,6 @@ export default class Calendar extends Component {
             dates_selected: this.enumerateBetweenDates(this.state.date_picker[0], this.state.date_picker[1])
         })
 
-
-
-        // this.state.dates_selected.forEach(date => {
-        //     var date = date.format("MM-DD-YY");
-        //     // var days = document.getElementsByClassName("day")
-        //     let days = this.state.
-        //     console.log('DAYZ: ' + days)
-
-        //     for (i = 0; i > days.length; i++) {
-        //         days[i].classList.remove("pending-reserve")
-        //         if (days[i].id == date) {
-        //             days[i].className += " pending-reserve"
-        //         }
-        //     }
-
-        // })
     };
 
     previous = () => {
@@ -134,7 +120,15 @@ export default class Calendar extends Component {
     };
 
     render() {
-        return <div style={{ position: 'absolute', right: '0', top: '0' }} id="calendar" onMouseDown={e => this.selectReservationRange(e)}>
+        return <div
+            style={{ position: 'absolute', right: '0', top: '0' }}
+            id="calendar"
+            onMouseDown={
+                e => {
+                    this.selectReservationRange(e);
+                    this.props.setSelectedDates(this.state.date_picker);
+                }
+            }>
             <div className="header">
                 <i className="fa fa-angle-left" onClick={this.previous}>&lt;</i>
                 {this.renderMonthLabel()}
@@ -150,8 +144,6 @@ export default class Calendar extends Component {
                         return <li key={index}>{date}</li>
                     })}
                 </ul> */}
-                {console.log(this.state.date_picker)}
-                {console.log(this.state.dates_selected)}
             </div>
         </div>
     }

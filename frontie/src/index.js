@@ -6,7 +6,8 @@ import SelectItem from './components/selectItems';
 import registerServiceWorker from './registerServiceWorker';
 
 
-ReactDOM.render(<div>
-    <SelectItem />
-</div>, document.getElementById('root'));
+ReactDOM.render(
+    <div>
+        <SelectItem />
+    </div>, document.getElementById('root'));
 registerServiceWorker();
